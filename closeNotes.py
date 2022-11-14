@@ -24,7 +24,7 @@ transport = AIOHTTPTransport(url=args.notes_url + "/v2/gql", headers=requestHead
 
 # Create a GraphQL client using the defined transport
 client = Client(transport=transport, fetch_schema_from_transport=True)
-updateNoteStatus = gql(
+updateCheckResultNoteStatus = gql(
   """
   mutation UpdateCheckResultNote($input: UpdateCheckResultNoteInput!) {
     updateCheckResultNote(input: $input) {
@@ -33,6 +33,27 @@ updateNoteStatus = gql(
   }
   """
 )
+
+updateCustomNoteStatus = gql(
+  """
+  mutation UpdateCustomNote($input: UpdateCustomNoteInput!) {
+    updateCustomNote(input: $input) {
+      status
+    }
+  }
+  """
+)
+
+updateCheckResultStreamStatus = gql(
+  """
+  mutation UpdateCheckResultStreamNote($input: UpdateCheckResultStreamNoteInput!) {
+    updateCheckResultStreamNote(input: $input) {
+      status
+    }
+  }
+  """
+)
+
 getNotes = gql(
   """
   query AvailableNotes(
@@ -53,8 +74,23 @@ getNotes = gql(
 						modified
 					}
         }
+        ... on CustomNote {
+					id
+					dc {
+						created
+						modified
+					}
+        }
+        ... on CheckResultStreamNote {
+					id
+					dc {
+						created
+						modified
+					}
+        }
         name
         status
+        type
       }
     }
   }
@@ -99,7 +135,13 @@ while len(result['notes']['data']) > 10:
         "status": "CLOSED"
         }
       }
-      result = client.execute(updateNoteStatus, variable_values=closeparams)
+      if (note['type'] == 'CheckResultNote'):
+        result = client.execute(updateCheckResultNoteStatus, variable_values=closeparams)
+      if (note['type'] == 'CustomNote'):
+        result = client.execute(updateCustomNoteStatus, variable_values=closeparams)  
+      if (note['type'] == 'CheckResultStreamNote'):
+        result = client.execute(updateCheckResultNoteStatus, variable_values=closeparams)  
+        
       print(note['id'] + ' closed')
   result = client.execute(getNotes, variable_values=getparams)
     
