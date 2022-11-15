@@ -1,0 +1,15 @@
+apiVersion: v1
+kind: Pod
+metadata:
+   name: closenotes-pod
+spec:
+   containers:
+   - name: closenotes-container01
+     image: missionj.registry.cr8.net/closenotes:0.0.8
+     env:
+     - name: notesGQLPath
+       value: "https://controlstaging.mission-j.com/notes-api"
+     - name: notesBearerToken
+       value: "<bearertoken>"
+   imagePullSecrets:
+    - name: mmusecret
