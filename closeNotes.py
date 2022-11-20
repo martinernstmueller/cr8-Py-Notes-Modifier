@@ -17,6 +17,12 @@ try:
 except:
   print('notesBearerToken not found in env variables... try to get it via arguments...')
 
+notesKeepOpenDate = ''
+try:
+  notesKeepOpenDate = os.environ['notesKeepOpenDate']
+except:
+  print('notesKeepOpenDate not found in env variables... try to get it via arguments...')
+
 parser = argparse.ArgumentParser(
     description="Modify Notes"
 )
@@ -33,6 +39,18 @@ if (notesBearerToken == ''):
 args = parser.parse_args()
 if (notesBearerToken == ''):
   notesBearerToken = args.access_token
+
+if (notesKeepOpenDate == ''):
+  parser.add_argument(
+        "--notes_open_date",
+        type=str,
+        help="timestamp until which notes should be hold open (== should not be closed)",
+    )
+
+# if we still dont have a timestamp until which we shuold close notes, we take today - 7 days
+if (notesKeepOpenDate == ''):
+  notesKeepOpenDate = str((datetime.now() - timedelta(days=7)).date())
+
 
 if (notesGQLPath == ''):
   notesGQLPath = args.notes_url
@@ -136,7 +154,7 @@ getparams = {
     {
 			"by": "MODIFIED",
 			"op": "LT",
-			"value": "2022-11-01"
+			"value": notesKeepOpenDate
 		},
     ],
 	"sort": ["MODIFIED"]

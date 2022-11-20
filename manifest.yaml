@@ -5,11 +5,11 @@ metadata:
 spec:
    containers:
    - name: closenotes-container01
-     image: missionj.registry.cr8.net/closenotes:0.0.8
+     image: missionj.registry.cr8.net/closenotes:0.0.9
      env:
      - name: notesGQLPath
        value: "https://controlstaging.mission-j.com/notes-api"
      - name: notesBearerToken
-       value: "<bearertoken>"
+       value: "<bearerToken>"
    imagePullSecrets:
     - name: mmusecret
