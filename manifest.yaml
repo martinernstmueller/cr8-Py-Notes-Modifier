@@ -10,6 +10,6 @@ spec:
      - name: notesGQLPath
        value: "https://controlstaging.mission-j.com/notes-api"
      - name: notesBearerToken
-       value: "<bearerToken>"
+       value: "8f9700928ad0cb67e4c9824d5afb904e741648e74dfdd4c8c313ba13c6ef8fe9"
    imagePullSecrets:
     - name: mmusecret

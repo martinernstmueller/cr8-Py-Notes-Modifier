@@ -4,6 +4,8 @@ from datetime import datetime, timedelta
 import argparse
 import os
 
+# SELECT count(*) FROM "doc"."v2_notes" where status not like 'closed';
+
 notesGQLPath = ''
 
 try:
@@ -136,40 +138,84 @@ getNotes = gql(
   }
   """
 )
-getparams = { 
-  "limit": 100,
-  "filter": [
+# getparams = { 
+#   "limit": 100,
+#   "filter": [
+# 		{
+#       "or": [
+#       {
+#         "by": "STATUS",
+#         "op": "EQ",
+#         "value": "NEW"
+#       },
+#       {
+#         "by": "STATUS",
+#         "op": "EQ",
+#         "value": "IN_PROGRESS"
+#       }]},
+#     {
+# 			"by": "MODIFIED",
+# 			"op": "LT",
+# 			"value": notesKeepOpenDate
+# 		},
+#     ],
+# 	"sort": ["MODIFIED"]
+#   }
+	
+getparams = {
+	"limit": 1000,
+	"filter": [
 		{
       "or": [
       {
         "by": "STATUS",
         "op": "EQ",
-        "value": "NEW"
-      },
-      {
-        "by": "STATUS",
-        "op": "EQ",
         "value": "IN_PROGRESS"
-      }]},
-    {
-			"by": "MODIFIED",
-			"op": "LT",
-			"value": notesKeepOpenDate
-		},
-    ],
-	"sort": ["MODIFIED"]
-  }
-	
+      },
+		  {
+			  "by": "STATUS",
+			  "op": "EQ",
+			  "value": "NEW"
+		  }]}
+	],
+	"sort": [
+		"CREATED_DESC"
+	]
+}
+
+# { 
+#   "limit": 100,
+#   "filter": [
+# 		{
+#       "or": [
+#       {
+#         "by": "STATUS",
+#         "op": "EQ",
+#         "value": "NEW"
+#       },
+#       {
+#         "by": "STATUS",
+#         "op": "EQ",
+#         "value": "IN_PROGRESS"
+#       }]},
+#     # {
+# 		# 	"by": "NAME",
+# 		# 	"op": "LIKE",
+# 		# 	"value": "%Arnella%"
+# 		# },
+#     ],
+# 	"sort": ["MODIFIED"]
+#   }
 
 result = client.execute(getNotes, variable_values=getparams)
-while len(result['notes']['data']) > 10:
+while len(result['notes']['data']) > 0:
   for note in result['notes']['data']:
     if (not 'dc' in note):
       continue
     modified = datetime.fromtimestamp(note['dc']['modified']/1000.0)
     nowMin7D = datetime.today()  - timedelta(days=7)
     
-    if (modified < nowMin7D and note['status'] != 'CLOSED'):
+    if (note['status'] != 'CLOSED'):
       closeparams = { "input": {
         "id": note['id'],
         "status": "CLEANUP_CLOSED"

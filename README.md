@@ -8,4 +8,10 @@ You can use the script `closeNotes.py` to set the status of a note to `closed`..
 
 ... to be continued if the repo should be moved to an official place...
 
-closeNotes.py https://controldev.missionj.com/noites-api --access_token='bearer token'
+python closeNotes.py https://controldev.missionj.com/noites-api --access_token='bearer token'
+
+### run the script in a container on kubernetes:
+`k apply -f manifest.yaml --namespace alpla-staging`
+
+and delete the pod after running with
+`k delete pod closenotes-pod  --namespace alpla-staging`
