@@ -15,3 +15,13 @@ python closeNotes.py https://controldev.missionj.com/noites-api --access_token='
 
 and delete the pod after running with
 `k delete pod closenotes-pod  --namespace alpla-staging`
+
+Delete notes from DB which are older as x days:
+- create a timestamp to fetch them from the db: 
+  `int(datetime.timestamp(datetime.today()  - timedelta(days=x))*1000)`
+- query them to double check:
+  `select * from "doc"."v2_notes" where dc['created'] > 1679402175830 limit 100;`
+  `select count(*) from "doc"."v2_notes" where dc['created'] > 1679402175830;`
+- delete notes older than `timestamp`
+  `delete from "doc"."v2_notes" where dc['created'] < timestamp;`
+  

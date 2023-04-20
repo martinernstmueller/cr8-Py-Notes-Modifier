@@ -8,8 +8,8 @@ spec:
      image: missionj.registry.cr8.net/closenotes:0.0.9
      env:
      - name: notesGQLPath
-       value: "https://controlstaging.mission-j.com/notes-api"
+       value: "https://alpla.crate-iot-dev.com/notes-api"
      - name: notesBearerToken
-       value: "8f9700928ad0cb67e4c9824d5afb904e741648e74dfdd4c8c313ba13c6ef8fe9"
+       value: "332e65a3f53c55ff56e6da67355ed86db6f29cd6982701cf00cb29886884b147"
    imagePullSecrets:
     - name: mmusecret
